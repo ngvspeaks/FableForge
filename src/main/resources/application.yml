@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: text-to-video-pipeline
+  threads:
+    virtual:
+      enabled: true
+
+comfyui:
+  base-url: "http://localhost:8188"
+  poll-interval-ms: 1000
+  timeout-seconds: 300
+  storage-dir: "./storage/videos"
+  temp-dir: "./storage/temp"
+
+logging:
+  level:
+    com.pipeline: DEBUG

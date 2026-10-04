@@ -1,0 +1,13 @@
+target/
+*.class
+*.jar
+*.war
+*.ear
+storage/videos/*
+!storage/videos/.gitkeep
+storage/temp/*
+!storage/temp/.gitkeep
+.idea/
+*.iml
+.vscode/
+.DS_Store
