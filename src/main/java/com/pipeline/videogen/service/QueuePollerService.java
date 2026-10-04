@@ -6,10 +6,13 @@ import com.pipeline.videogen.config.ComfyUIProperties;
 import com.pipeline.videogen.model.GenerateVideoRequest;
 import com.pipeline.videogen.model.VideoJob;
 import com.pipeline.videogen.model.VideoJobStatus;
+import com.pipeline.videogen.service.backoff.AdaptiveExponentialBackoff;
+import com.pipeline.videogen.service.backoff.PollingBackoffStrategy;
 import com.pipeline.videogen.storage.VideoJobRepository;
 import com.pipeline.videogen.storage.VideoStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -30,29 +33,52 @@ public class QueuePollerService {
     private final VideoStorageService videoStorageService;
     private final VideoJobRepository jobRepository;
     private final ComfyUIProperties properties;
+    private final PollingBackoffStrategy backoffStrategy;
+
+    @Autowired
+    public QueuePollerService(ComfyUIClient comfyUIClient,
+                              VideoStorageService videoStorageService,
+                              VideoJobRepository jobRepository,
+                              ComfyUIProperties properties,
+                              PollingBackoffStrategy backoffStrategy) {
+        this.comfyUIClient = comfyUIClient;
+        this.videoStorageService = videoStorageService;
+        this.jobRepository = jobRepository;
+        this.properties = properties;
+        this.backoffStrategy = backoffStrategy != null ? backoffStrategy : createDefaultBackoff(properties);
+    }
 
     public QueuePollerService(ComfyUIClient comfyUIClient,
                               VideoStorageService videoStorageService,
                               VideoJobRepository jobRepository,
                               ComfyUIProperties properties) {
-        this.comfyUIClient = comfyUIClient;
-        this.videoStorageService = videoStorageService;
-        this.jobRepository = jobRepository;
-        this.properties = properties;
+        this(comfyUIClient, videoStorageService, jobRepository, properties, createDefaultBackoff(properties));
+    }
+
+    private static PollingBackoffStrategy createDefaultBackoff(ComfyUIProperties properties) {
+        return new AdaptiveExponentialBackoff(
+                Duration.ofMillis(properties.effectiveInitialPollIntervalMs()),
+                Duration.ofMillis(properties.effectiveMaxPollIntervalMs()),
+                properties.backoffMultiplier(),
+                properties.jitterFactor()
+        );
     }
 
     /**
-     * Polls ComfyUI asynchronously for prompt execution completion.
+     * Polls ComfyUI asynchronously for prompt execution completion using adaptive backoff.
      */
     @Async
     public CompletableFuture<VideoJob> pollJobCompletionAsync(UUID jobId, String promptId, GenerateVideoRequest request) {
         Instant startTime = Instant.now();
         Duration timeout = Duration.ofSeconds(properties.timeoutSeconds());
-        long pollInterval = properties.pollIntervalMs();
+        Duration currentDelay = Duration.ZERO;
+        int attempt = 0;
 
-        log.info("Starting polling for Job ID: {} (Prompt ID: {}) with timeout: {}s", jobId, promptId, timeout.toSeconds());
+        log.info("Starting adaptive polling for Job ID: {} (Prompt ID: {}) with timeout: {}s, initialBackoff: {}ms",
+                jobId, promptId, timeout.toSeconds(), backoffStrategy.initialDelay().toMillis());
 
         while (Duration.between(startTime, Instant.now()).compareTo(timeout) < 0) {
+            attempt++;
             try {
                 JsonNode history = comfyUIClient.getExecutionHistory(promptId);
 
@@ -75,7 +101,9 @@ public class QueuePollerService {
                     MediaOutputInfo outputMedia = extractOutputMedia(outputsNode);
 
                     if (outputMedia != null) {
-                        log.info("Detected rendered media for job {}: {}", jobId, outputMedia.filename());
+                        Duration elapsed = Duration.between(startTime, Instant.now());
+                        log.info("Detected rendered media for job {} on attempt {} (elapsed: {}ms): {}",
+                                jobId, attempt, elapsed.toMillis(), outputMedia.filename());
                         updateJobStatus(jobId, job -> job.withStatus(VideoJobStatus.PROCESSING));
 
                         // Stream and store the output MP4
@@ -94,18 +122,22 @@ public class QueuePollerService {
                     }
                 }
 
-                // If not yet in history, update to QUEUED or PROCESSING
+                // If not yet in history or output not ready, update to PROCESSING
                 updateJobStatus(jobId, job -> job.withStatus(VideoJobStatus.PROCESSING));
-                Thread.sleep(pollInterval);
+
+                currentDelay = backoffStrategy.nextDelay(attempt, currentDelay);
+                log.debug("Job {} attempt {} incomplete. Backing off for {}ms", jobId, attempt, currentDelay.toMillis());
+                Thread.sleep(currentDelay.toMillis());
 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 VideoJob failedJob = updateJobStatus(jobId, job -> job.withFailed("Polling interrupted"));
                 return CompletableFuture.completedFuture(failedJob);
             } catch (Exception e) {
-                log.warn("Error during polling iteration for job {}: {}", jobId, e.getMessage());
+                log.warn("Error during polling iteration {} for job {}: {}", attempt, jobId, e.getMessage());
                 try {
-                    Thread.sleep(pollInterval);
+                    currentDelay = backoffStrategy.nextDelay(attempt, currentDelay);
+                    Thread.sleep(currentDelay.toMillis());
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     return CompletableFuture.completedFuture(updateJobStatus(jobId, job -> job.withFailed("Interrupted")));
@@ -113,7 +145,7 @@ public class QueuePollerService {
             }
         }
 
-        String timeoutMsg = "Job timed out after " + timeout.toSeconds() + " seconds waiting for ComfyUI rendering";
+        String timeoutMsg = "Job timed out after " + timeout.toSeconds() + " seconds waiting for ComfyUI rendering (" + attempt + " attempts)";
         log.error(timeoutMsg);
         VideoJob timedOutJob = updateJobStatus(jobId, job -> job.withFailed(timeoutMsg));
         return CompletableFuture.completedFuture(timedOutJob);
@@ -150,6 +182,10 @@ public class QueuePollerService {
             }
         }
         return null;
+    }
+
+    public PollingBackoffStrategy getBackoffStrategy() {
+        return backoffStrategy;
     }
 
     public record MediaOutputInfo(String filename, String subfolder, String type) {}

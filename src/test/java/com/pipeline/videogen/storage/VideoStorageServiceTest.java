@@ -35,8 +35,12 @@ class VideoStorageServiceTest {
 
         ComfyUIProperties props = new ComfyUIProperties(
                 "http://localhost:8188",
-                1000,
-                300,
+                1000L,
+                100L,
+                3000L,
+                1.5,
+                0.1,
+                300L,
                 storagePath.toString(),
                 scratchTempPath.toString()
         );
