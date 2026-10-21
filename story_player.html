@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>David & Goliath | Storybook Cinema Player</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0c10;
+            --panel-bg: rgba(22, 27, 34, 0.85);
+            --gold: #f59e0b;
+            --gold-light: #fbbf24;
+            --cyan: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px 60px 20px;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(245, 158, 11, 0.12), transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.10), transparent 50%);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            max-width: 900px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--gold);
+            color: var(--gold-light);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #fff 40%, var(--gold-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .theater-container {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(16px);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            background: #000;
+            aspect-ratio: 16 / 9;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            outline: none;
+        }
+
+        .chapters-bar {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            border-top: 1px solid var(--border);
+            background: rgba(10, 12, 16, 0.6);
+        }
+
+        .chapter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: var(--text-main);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+        }
+
+        .chapter-btn:hover {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .chapter-num {
+            font-size: 0.75rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .chapter-title {
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
+        .chapter-time {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .info-cards {
+            max-width: 1100px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(12px);
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--gold-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card p, .card li {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .card ul {
+            padding-left: 20px;
+        }
+
+        .btn-launch {
+            display: inline-block;
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            color: #000;
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: 9999px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-launch:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <span class="badge">Animated Bible Stories for Kids</span>
+        <h1>David &amp; Goliath: The Brave Shepherd Boy</h1>
+        <p class="subtitle" id="page-subtitle">Pixar 3D Cinematic Style • English Voiceover Narration • Synchronized Subtitles</p>
+
+        <!-- Language Selector -->
+        <div style="margin-top: 18px; display: inline-flex; background: rgba(255, 255, 255, 0.08); padding: 5px; border-radius: 9999px; border: 1px solid var(--border);">
+            <button id="btn-lang-en" onclick="setLanguage('en')" style="background: var(--gold); color: #000; border: none; font-weight: 700; padding: 7px 20px; border-radius: 9999px; cursor: pointer; transition: all 0.2s;">
+                English (US Neural)
+            </button>
+            <button id="btn-lang-ml" onclick="setLanguage('ml')" style="background: transparent; color: var(--text-main); border: none; font-weight: 600; padding: 7px 20px; border-radius: 9999px; cursor: pointer; transition: all 0.2s;">
+                മലയാളം (Malayalam Neural)
+            </button>
+        </div>
+    </header>
+
+    <div class="theater-container">
+        <div class="video-wrapper">
+            <video id="player" controls autoplay playsinline>
+                <source id="video-src" src="src/main/resources/static/david_and_goliath_kids_story.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div class="chapters-bar">
+            <button class="chapter-btn" onclick="jumpTo(0)">
+                <div class="chapter-num">Scene 1 • 0:00</div>
+                <div class="chapter-title">The Shepherd Boy</div>
+                <div class="chapter-time">Bethlehem Hills</div>
+            </button>
+            <button class="chapter-btn" onclick="jumpTo(12.5)">
+                <div class="chapter-num">Scene 2 • 0:12</div>
+                <div class="chapter-title">The Giant Goliath</div>
+                <div class="chapter-time">Valley of Elah</div>
+            </button>
+            <button class="chapter-btn" onclick="jumpTo(25.0)">
+                <div class="chapter-num">Scene 3 • 0:25</div>
+                <div class="chapter-title">Five Smooth Stones</div>
+                <div class="chapter-time">Sparkling Brook</div>
+            </button>
+            <button class="chapter-btn" onclick="jumpTo(36.5)">
+                <div class="chapter-num">Scene 4 • 0:36</div>
+                <div class="chapter-title">The Confrontation</div>
+                <div class="chapter-time">Faith &amp; Sling</div>
+            </button>
+            <button class="chapter-btn" onclick="jumpTo(48.0)">
+                <div class="chapter-num">Scene 5 • 0:48</div>
+                <div class="chapter-title">Joy and Victory</div>
+                <div class="chapter-time">Celebration</div>
+            </button>
+        </div>
+    </div>
+
+    <div class="info-cards">
+        <div class="card">
+            <h3>🎬 Story Highlights</h3>
+            <p>A complete 5-scene adaptation crafted for children. Illustrates how faith and courage can overcome obstacles no matter how small you feel.</p>
+        </div>
+        <div class="card">
+            <h3>🎙️ English Audio Narration</h3>
+            <p>Narrated in warm, expressive English with natural storytelling cadence, sound-sync transitions, and visual subtitling for reading engagement.</p>
+        </div>
+        <div class="card">
+            <h3>🚀 Ready for YouTube</h3>
+            <p>Public-domain narrative, original custom artwork, and copyright-clean production ready to upload as a YouTube Kid's feature.</p>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('player');
+        const videoSrc = document.getElementById('video-src');
+        const btnEn = document.getElementById('btn-lang-en');
+        const btnMl = document.getElementById('btn-lang-ml');
+        const subtitle = document.getElementById('page-subtitle');
+
+        function setLanguage(lang) {
+            const currentTime = video.currentTime;
+            const isPlaying = !video.paused;
+
+            if (lang === 'ml') {
+                videoSrc.src = 'src/main/resources/static/david_and_goliath_malayalam_story.mp4';
+                btnMl.style.background = 'var(--gold)';
+                btnMl.style.color = '#000';
+                btnMl.style.fontWeight = '700';
+                btnEn.style.background = 'transparent';
+                btnEn.style.color = 'var(--text-main)';
+                btnEn.style.fontWeight = '600';
+                subtitle.innerText = '3D ആനിമേഷൻ ശൈലി • മലയാളം ശബ്ദവിവരണം • മലയാളം സബ്‌ടൈറ്റിലുകൾ';
+            } else {
+                videoSrc.src = 'src/main/resources/static/david_and_goliath_kids_story.mp4';
+                btnEn.style.background = 'var(--gold)';
+                btnEn.style.color = '#000';
+                btnEn.style.fontWeight = '700';
+                btnMl.style.background = 'transparent';
+                btnMl.style.color = 'var(--text-main)';
+                btnMl.style.fontWeight = '600';
+                subtitle.innerText = 'Pixar 3D Cinematic Style • English Voiceover Narration • Synchronized Subtitles';
+            }
+
+            video.load();
+            video.currentTime = Math.min(currentTime, 50);
+            if (isPlaying) video.play();
+        }
+
+        function jumpTo(seconds) {
+            video.currentTime = seconds;
+            video.play();
+        }
+    </script>
+</body>
+</html>
