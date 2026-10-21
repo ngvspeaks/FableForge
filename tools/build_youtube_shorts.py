@@ -69,6 +69,31 @@ ML_SHORT_SCENES = [
     }
 ]
 
+# German Short scenes (~22s)
+DE_SHORT_SCENES = [
+    {
+        "id": 1,
+        "image": os.path.join(OUTPUT_DIR, "giant_goliath_challenge_1792592344206.jpg"),
+        "narration": "Ein riesiger Krieger namens Goliath forderte alle heraus, und die Soldaten flohen voller Angst!",
+        "subtitle": "Der Riese Goliath forderte alle heraus – alle flohen voller Angst!",
+        "title": "DER RIESE GOLIATH"
+    },
+    {
+        "id": 2,
+        "image": os.path.join(OUTPUT_DIR, "david_goliath_battle_1792592432673.jpg"),
+        "narration": "Doch der junge Hirtenjunge David trat dem Riesen mit einer einfachen Schleuder furchtlos entgegen!",
+        "subtitle": "Nur der junge David trat dem Riesen furchtlos entgegen!",
+        "title": "DAVIDS GROSSER MUT"
+    },
+    {
+        "id": 3,
+        "image": os.path.join(OUTPUT_DIR, "david_victory_celebration_1792592470436.jpg"),
+        "narration": "Der Stein traf, der Riese fiel, und David bewies: Mit großem Mut kannst du jeden Riesen besiegen!",
+        "subtitle": "Mit großem Mut kannst du jeden Riesen besiegen!",
+        "title": "SIEG UND FREUDE"
+    }
+]
+
 def get_audio_duration(audio_file):
     cmd = [FFMPEG_EXE, "-i", audio_file]
     res = subprocess.run(cmd, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL, text=True)
@@ -145,7 +170,12 @@ def build_vertical_frame(raw_img, progress, subtitle_text, title_text, lang="en"
         draw.text(((out_w - sw) // 2, by + 18), subtitle_text, font=font_sub, fill=(255, 255, 255, 255))
         
     # Bottom Call to Action (Directs to full story in Related Video)
-    cta_text = "👇 TAP 'RELATED VIDEO' FOR FULL STORY" if lang == "en" else "👇 പൂർണ്ണ കഥ കാണാൻ താഴെ ക്ലിക്ക് ചെയ്യുക"
+    if lang == "en":
+        cta_text = "👇 TAP 'RELATED VIDEO' FOR FULL STORY"
+    elif lang == "ml":
+        cta_text = "👇 പൂർണ്ണ കഥ കാണാൻ താഴെ ക്ലിക്ക് ചെയ്യുക"
+    else:
+        cta_text = "👇 KLICKE 'RELATED VIDEO' FÜR DEN GANZEN FILM"
     bbox_c = font_cta.getbbox(cta_text)
     cw = bbox_c[2] - bbox_c[0]
     ch = bbox_c[3] - bbox_c[1]
@@ -162,8 +192,15 @@ def build_vertical_frame(raw_img, progress, subtitle_text, title_text, lang="en"
     return cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
 
 def generate_short(lang="en"):
-    scenes = EN_SHORT_SCENES if lang == "en" else ML_SHORT_SCENES
-    voice = "en-US-ChristopherNeural" if lang == "en" else "ml-IN-MidhunNeural"
+    if lang == "en":
+        scenes = EN_SHORT_SCENES
+        voice = "en-US-ChristopherNeural"
+    elif lang == "ml":
+        scenes = ML_SHORT_SCENES
+        voice = "ml-IN-MidhunNeural"
+    else:
+        scenes = DE_SHORT_SCENES
+        voice = "de-DE-ConradNeural"
     prefix = f"{lang}_short"
     
     print(f"\n=== GENERATING 9:16 YOUTUBE SHORT ({lang.upper()}) ===")
@@ -250,6 +287,7 @@ def generate_short(lang="en"):
 def main():
     generate_short("en")
     generate_short("ml")
+    generate_short("de")
 
 if __name__ == "__main__":
     main()
