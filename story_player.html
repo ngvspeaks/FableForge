@@ -209,12 +209,15 @@
         <p class="subtitle" id="page-subtitle">Pixar 3D Cinematic Style • English Voiceover Narration • Synchronized Subtitles</p>
 
         <!-- Language Selector -->
-        <div style="margin-top: 18px; display: inline-flex; background: rgba(255, 255, 255, 0.08); padding: 5px; border-radius: 9999px; border: 1px solid var(--border);">
-            <button id="btn-lang-en" onclick="setLanguage('en')" style="background: var(--gold); color: #000; border: none; font-weight: 700; padding: 7px 20px; border-radius: 9999px; cursor: pointer; transition: all 0.2s;">
-                English (US Neural)
+        <div style="margin-top: 18px; display: inline-flex; gap: 4px; background: rgba(255, 255, 255, 0.08); padding: 5px; border-radius: 9999px; border: 1px solid var(--border);">
+            <button id="btn-lang-en" onclick="setLanguage('en')" style="background: var(--gold); color: #000; border: none; font-weight: 700; padding: 7px 18px; border-radius: 9999px; cursor: pointer; transition: all 0.2s;">
+                English (US)
             </button>
-            <button id="btn-lang-ml" onclick="setLanguage('ml')" style="background: transparent; color: var(--text-main); border: none; font-weight: 600; padding: 7px 20px; border-radius: 9999px; cursor: pointer; transition: all 0.2s;">
-                മലയാളം (Malayalam Neural)
+            <button id="btn-lang-ml" onclick="setLanguage('ml')" style="background: transparent; color: var(--text-main); border: none; font-weight: 600; padding: 7px 18px; border-radius: 9999px; cursor: pointer; transition: all 0.2s;">
+                മലയാളം (Malayalam)
+            </button>
+            <button id="btn-lang-de" onclick="setLanguage('de')" style="background: transparent; color: var(--text-main); border: none; font-weight: 600; padding: 7px 18px; border-radius: 9999px; cursor: pointer; transition: all 0.2s;">
+                Deutsch (German)
             </button>
         </div>
     </header>
@@ -276,29 +279,37 @@
         const videoSrc = document.getElementById('video-src');
         const btnEn = document.getElementById('btn-lang-en');
         const btnMl = document.getElementById('btn-lang-ml');
+        const btnDe = document.getElementById('btn-lang-de');
         const subtitle = document.getElementById('page-subtitle');
 
         function setLanguage(lang) {
             const currentTime = video.currentTime;
             const isPlaying = !video.paused;
 
+            // Reset buttons
+            [btnEn, btnMl, btnDe].forEach(btn => {
+                btn.style.background = 'transparent';
+                btn.style.color = 'var(--text-main)';
+                btn.style.fontWeight = '600';
+            });
+
             if (lang === 'ml') {
                 videoSrc.src = 'src/main/resources/static/david_and_goliath_malayalam_story.mp4';
                 btnMl.style.background = 'var(--gold)';
                 btnMl.style.color = '#000';
                 btnMl.style.fontWeight = '700';
-                btnEn.style.background = 'transparent';
-                btnEn.style.color = 'var(--text-main)';
-                btnEn.style.fontWeight = '600';
                 subtitle.innerText = '3D ആനിമേഷൻ ശൈലി • മലയാളം ശബ്ദവിവരണം • മലയാളം സബ്‌ടൈറ്റിലുകൾ';
+            } else if (lang === 'de') {
+                videoSrc.src = 'src/main/resources/static/david_and_goliath_german_story.mp4';
+                btnDe.style.background = 'var(--gold)';
+                btnDe.style.color = '#000';
+                btnDe.style.fontWeight = '700';
+                subtitle.innerText = 'Pixar 3D Stil • Deutsche Sprachausgabe (Conrad) • Deutsche Untertitel';
             } else {
                 videoSrc.src = 'src/main/resources/static/david_and_goliath_kids_story.mp4';
                 btnEn.style.background = 'var(--gold)';
                 btnEn.style.color = '#000';
                 btnEn.style.fontWeight = '700';
-                btnMl.style.background = 'transparent';
-                btnMl.style.color = 'var(--text-main)';
-                btnMl.style.fontWeight = '600';
                 subtitle.innerText = 'Pixar 3D Cinematic Style • English Voiceover Narration • Synchronized Subtitles';
             }
 
