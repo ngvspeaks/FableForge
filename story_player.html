@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>David & Goliath | Storybook Cinema Player</title>
+    <title>FableForge Cinema | Samson: The Chosen Nazarite</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Cinzel:wght@600;700;800&family=Noto+Sans+Malayalam:wght@400;600&family=Noto+Sans+Devanagari:wght@400;600&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0a0c10;
-            --panel-bg: rgba(22, 27, 34, 0.85);
+            --bg-dark: #07090e;
+            --panel-bg: rgba(18, 22, 31, 0.88);
             --gold: #f59e0b;
             --gold-light: #fbbf24;
+            --gold-glow: rgba(245, 158, 11, 0.35);
             --cyan: #38bdf8;
-            --text-main: #f1f5f9;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: rgba(255, 255, 255, 0.12);
         }
@@ -33,16 +37,26 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 30px 20px 60px 20px;
-            background-image: 
-                radial-gradient(circle at 15% 20%, rgba(245, 158, 11, 0.12), transparent 45%),
-                radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.10), transparent 50%);
+            padding: 30px 20px 80px 20px;
+            background-image:
+                radial-gradient(circle at 10% 15%, rgba(245, 158, 11, 0.15), transparent 45%),
+                radial-gradient(circle at 90% 85%, rgba(56, 189, 248, 0.12), transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.06), transparent 60%);
         }
 
         .header {
             text-align: center;
             margin-bottom: 25px;
-            max-width: 900px;
+            max-width: 950px;
+        }
+
+        .badges-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         .badge {
@@ -50,31 +64,110 @@
             background: rgba(245, 158, 11, 0.15);
             border: 1px solid var(--gold);
             color: var(--gold-light);
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.78rem;
+            font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
-            padding: 4px 14px;
+            padding: 5px 14px;
             border-radius: 9999px;
-            margin-bottom: 12px;
+        }
+
+        .badge-cyan {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: var(--cyan);
+            color: var(--cyan);
         }
 
         h1 {
             font-family: 'Cinzel', serif;
-            font-size: 2.4rem;
-            font-weight: 700;
+            font-size: 2.6rem;
+            font-weight: 800;
             letter-spacing: 1px;
-            background: linear-gradient(135deg, #fff 40%, var(--gold-light) 100%);
+            background: linear-gradient(135deg, #ffffff 40%, var(--gold-light) 95%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
         .subtitle {
             color: var(--text-muted);
             font-size: 1.05rem;
+            line-height: 1.5;
         }
 
+        /* Movie Selector Tabs */
+        .movie-selector {
+            display: inline-flex;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px;
+            border-radius: 9999px;
+            border: 1px solid var(--border);
+            margin-top: 18px;
+            backdrop-filter: blur(10px);
+        }
+
+        .movie-tab-btn {
+            background: transparent;
+            color: var(--text-main);
+            border: none;
+            font-weight: 600;
+            padding: 9px 20px;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .movie-tab-btn.active {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            color: #000;
+            font-weight: 800;
+            box-shadow: 0 4px 15px var(--gold-glow);
+        }
+
+        /* 6-Language Selector */
+        .lang-selector-bar {
+            margin-top: 18px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--gold);
+            background: rgba(245, 158, 11, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .lang-btn.active {
+            background: var(--gold);
+            color: #000;
+            font-weight: 800;
+            border-color: var(--gold-light);
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        /* Main Theater Container */
         .theater-container {
             width: 100%;
             max-width: 1100px;
@@ -82,8 +175,9 @@
             border: 1px solid var(--border);
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(16px);
+            margin-top: 15px;
         }
 
         .video-wrapper {
@@ -100,17 +194,18 @@
             outline: none;
         }
 
+        /* Chapters Bar */
         .chapters-bar {
-            padding: 24px;
+            padding: 20px 24px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 12px;
             border-top: 1px solid var(--border);
-            background: rgba(10, 12, 16, 0.6);
+            background: rgba(10, 12, 16, 0.7);
         }
 
         .chapter-btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 12px 14px;
@@ -122,7 +217,7 @@
         }
 
         .chapter-btn:hover {
-            background: rgba(245, 158, 11, 0.15);
+            background: rgba(245, 158, 11, 0.16);
             border-color: var(--gold);
             transform: translateY(-2px);
         }
@@ -147,11 +242,12 @@
             margin-top: 2px;
         }
 
+        /* Info Cards */
         .info-cards {
             max-width: 1100px;
             width: 100%;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 25px;
         }
@@ -160,64 +256,132 @@
             background: var(--panel-bg);
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 20px;
+            padding: 22px;
             backdrop-filter: blur(12px);
         }
 
         .card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
             color: var(--gold-light);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .card p, .card li {
+        .card p,
+        .card li {
             font-size: 0.92rem;
             color: var(--text-muted);
             line-height: 1.6;
         }
 
-        .card ul {
-            padding-left: 20px;
+        .card code {
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--cyan);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 0.85rem;
         }
 
-        .btn-launch {
-            display: inline-block;
-            background: linear-gradient(135deg, #d97706, #f59e0b);
-            color: #000;
-            font-weight: 700;
-            padding: 10px 22px;
-            border-radius: 9999px;
-            text-decoration: none;
-            margin-top: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
+        /* Keyframes Showcase Carousel */
+        .showcase-section {
+            max-width: 1100px;
+            width: 100%;
+            margin-top: 30px;
         }
 
-        .btn-launch:hover {
-            transform: scale(1.03);
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+        .showcase-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 14px;
+        }
+
+        .gallery-item {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: var(--gold);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-caption {
+            padding: 10px 12px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-align: center;
+            background: rgba(10, 12, 16, 0.8);
         }
     </style>
 </head>
+
 <body>
 
     <header class="header">
-        <span class="badge">Animated Bible Stories for Kids</span>
-        <h1>David &amp; Goliath: The Brave Shepherd Boy</h1>
-        <p class="subtitle" id="page-subtitle">Pixar 3D Cinematic Style • English Voiceover Narration • Synchronized Subtitles</p>
+        <div class="badges-row">
+            <span class="badge">🔥 FableForge Cinematic Studio</span>
+            <span class="badge badge-cyan">6-Language Neural Audio</span>
+            <span class="badge">100% Open-Source Engine</span>
+        </div>
+        <h1 id="movie-title">Samson: The Chosen Nazarite</h1>
+        <p class="subtitle" id="movie-subtitle">
+            Epic 3D Cinematic Animation Style • 6-Language Neural Voiceover • Layered Foley &amp; Temple Collapse SFX
+        </p>
 
-        <!-- Language Selector -->
-        <div style="margin-top: 18px; display: inline-flex; gap: 4px; background: rgba(255, 255, 255, 0.08); padding: 5px; border-radius: 9999px; border: 1px solid var(--border);">
-            <button id="btn-lang-en" onclick="setLanguage('en')" style="background: var(--gold); color: #000; border: none; font-weight: 700; padding: 7px 18px; border-radius: 9999px; cursor: pointer; transition: all 0.2s;">
-                English (US)
+        <!-- Movie Switcher -->
+        <div class="movie-selector">
+            <button class="movie-tab-btn active" id="tab-samson" onclick="switchMovie('samson')">
+                🎬 Samson (Epic 6-Languages)
             </button>
-            <button id="btn-lang-ml" onclick="setLanguage('ml')" style="background: transparent; color: var(--text-main); border: none; font-weight: 600; padding: 7px 18px; border-radius: 9999px; cursor: pointer; transition: all 0.2s;">
-                മലയാളം (Malayalam)
+            <button class="movie-tab-btn" id="tab-david" onclick="switchMovie('david')">
+                ⚔️ David &amp; Goliath (Kids Story)
             </button>
-            <button id="btn-lang-de" onclick="setLanguage('de')" style="background: transparent; color: var(--text-main); border: none; font-weight: 600; padding: 7px 18px; border-radius: 9999px; cursor: pointer; transition: all 0.2s;">
-                Deutsch (German)
+        </div>
+
+        <!-- 6-Language Selector Bar (Visible for Samson) -->
+        <div class="lang-selector-bar" id="samson-lang-bar">
+            <button class="lang-btn active" id="btn-lang-en" onclick="setSamsonLang('en')">
+                🇺🇸 English
+            </button>
+            <button class="lang-btn" id="btn-lang-hi" onclick="setSamsonLang('hi')">
+                🇮🇳 हिन्दी (Hindi)
+            </button>
+            <button class="lang-btn" id="btn-lang-ml" onclick="setSamsonLang('ml')">
+                🇮🇳 മലയാളം (Malayalam)
+            </button>
+            <button class="lang-btn" id="btn-lang-de" onclick="setSamsonLang('de')">
+                🇩🇪 Deutsch (German)
+            </button>
+            <button class="lang-btn" id="btn-lang-fr" onclick="setSamsonLang('fr')">
+                🇫🇷 Français (French)
+            </button>
+            <button class="lang-btn" id="btn-lang-es" onclick="setSamsonLang('es')">
+                🇪🇸 Español (Spanish)
             </button>
         </div>
     </header>
@@ -225,97 +389,175 @@
     <div class="theater-container">
         <div class="video-wrapper">
             <video id="player" controls autoplay playsinline>
-                <source id="video-src" src="src/main/resources/static/david_and_goliath_kids_story.mp4" type="video/mp4">
+                <source id="video-src" src="storage/samson/output/samson_en.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         </div>
 
-        <div class="chapters-bar">
+        <!-- Dynamic Chapters Bar -->
+        <div class="chapters-bar" id="chapters-container">
             <button class="chapter-btn" onclick="jumpTo(0)">
-                <div class="chapter-num">Scene 1 • 0:00</div>
-                <div class="chapter-title">The Shepherd Boy</div>
-                <div class="chapter-time">Bethlehem Hills</div>
+                <div class="chapter-num">Act 1 • 0:00</div>
+                <div class="chapter-title">The Lion of Timnah</div>
+                <div class="chapter-time">Bare-hand battle</div>
             </button>
-            <button class="chapter-btn" onclick="jumpTo(12.5)">
-                <div class="chapter-num">Scene 2 • 0:12</div>
-                <div class="chapter-title">The Giant Goliath</div>
-                <div class="chapter-time">Valley of Elah</div>
+            <button class="chapter-btn" onclick="jumpTo(22.8)">
+                <div class="chapter-num">Act 2 • 0:22</div>
+                <div class="chapter-title">Ramath-lehi Victory</div>
+                <div class="chapter-time">Donkey jawbone</div>
             </button>
-            <button class="chapter-btn" onclick="jumpTo(25.0)">
-                <div class="chapter-num">Scene 3 • 0:25</div>
-                <div class="chapter-title">Five Smooth Stones</div>
-                <div class="chapter-time">Sparkling Brook</div>
+            <button class="chapter-btn" onclick="jumpTo(45.0)">
+                <div class="chapter-num">Act 3 • 0:45</div>
+                <div class="chapter-title">Delilah's Betrayal</div>
+                <div class="chapter-time">The sacred braids</div>
             </button>
-            <button class="chapter-btn" onclick="jumpTo(36.5)">
-                <div class="chapter-num">Scene 4 • 0:36</div>
-                <div class="chapter-title">The Confrontation</div>
-                <div class="chapter-time">Faith &amp; Sling</div>
+            <button class="chapter-btn" onclick="jumpTo(68.6)">
+                <div class="chapter-num">Act 4 • 1:08</div>
+                <div class="chapter-title">The Prison of Gaza</div>
+                <div class="chapter-time">Chains &amp; millstone</div>
             </button>
-            <button class="chapter-btn" onclick="jumpTo(48.0)">
-                <div class="chapter-num">Scene 5 • 0:48</div>
-                <div class="chapter-title">Joy and Victory</div>
-                <div class="chapter-time">Celebration</div>
+            <button class="chapter-btn" onclick="jumpTo(88.4)">
+                <div class="chapter-num">Act 5 • 1:28</div>
+                <div class="chapter-title">Temple of Dagon</div>
+                <div class="chapter-time">The final victory</div>
             </button>
         </div>
     </div>
 
+    <!-- 5 Anchor Scenes Visual Showcase -->
+    <section class="showcase-section">
+        <h2 class="showcase-title">🎨 Samson Character &amp; Scene Visual Storyboard</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="storage/samson/images/samson_lion_battle_1793120775287.jpg" alt="Act 1">
+                <div class="gallery-caption">Act 1: Lion Battle</div>
+            </div>
+            <div class="gallery-item">
+                <img src="storage/samson/images/samson_ramath_lehi_1793120800316.jpg" alt="Act 2">
+                <div class="gallery-caption">Act 2: Ramath-lehi</div>
+            </div>
+            <div class="gallery-item">
+                <img src="storage/samson/images/delilah_betrayal_samson_1793120823545.jpg" alt="Act 3">
+                <div class="gallery-caption">Act 3: Delilah Shears</div>
+            </div>
+            <div class="gallery-item">
+                <img src="storage/samson/images/samson_prison_gaza_1793120848559.jpg" alt="Act 4">
+                <div class="gallery-caption">Act 4: Gaza Millstone</div>
+            </div>
+            <div class="gallery-item">
+                <img src="storage/samson/images/samson_temple_dagon_1793120884719.jpg" alt="Act 5">
+                <div class="gallery-caption">Act 5: Temple Fall</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Cards -->
     <div class="info-cards">
         <div class="card">
-            <h3>🎬 Story Highlights</h3>
-            <p>A complete 5-scene adaptation crafted for children. Illustrates how faith and courage can overcome obstacles no matter how small you feel.</p>
+            <h3>🎬 Real AI Video Drop-In Slot</h3>
+            <p>
+                Our pipeline detects any video diffusion clips placed in
+                <code>storage/samson/video_clips/scene_1.mp4</code>.
+                When a clip is added (from Wan 2.1 or LTX-Video), it automatically overrides the animatic frames with
+                full character movement!
+            </p>
         </div>
         <div class="card">
-            <h3>🎙️ English Audio Narration</h3>
-            <p>Narrated in warm, expressive English with natural storytelling cadence, sound-sync transitions, and visual subtitling for reading engagement.</p>
+            <h3>🎙️ 6 Neural Language Cast</h3>
+            <p>
+                Studio-grade narration in <strong>English, Hindi, Malayalam, German, French, and Spanish</strong> with
+                dynamic word-level subtitles and synchronized volume-ducked cinematic soundtrack.
+            </p>
         </div>
         <div class="card">
-            <h3>🚀 Ready for YouTube</h3>
-            <p>Public-domain narrative, original custom artwork, and copyright-clean production ready to upload as a YouTube Kid's feature.</p>
+            <h3>⚡ 100% Free &amp; Open-Source</h3>
+            <p>
+                Built on Edge-TTS, FFmpeg, and Python. Zero API subscription keys, zero credit burn, unlimited rendering
+                at your own pace.
+            </p>
         </div>
     </div>
 
     <script>
         const video = document.getElementById('player');
         const videoSrc = document.getElementById('video-src');
-        const btnEn = document.getElementById('btn-lang-en');
-        const btnMl = document.getElementById('btn-lang-ml');
-        const btnDe = document.getElementById('btn-lang-de');
-        const subtitle = document.getElementById('page-subtitle');
+        const samsonLangBar = document.getElementById('samson-lang-bar');
+        const movieTitle = document.getElementById('movie-title');
+        const movieSubtitle = document.getElementById('movie-subtitle');
+        const chaptersContainer = document.getElementById('chapters-container');
 
-        function setLanguage(lang) {
-            const currentTime = video.currentTime;
-            const isPlaying = !video.paused;
+        let currentMovie = 'samson';
+        let currentSamsonLang = 'en';
 
-            // Reset buttons
-            [btnEn, btnMl, btnDe].forEach(btn => {
-                btn.style.background = 'transparent';
-                btn.style.color = 'var(--text-main)';
-                btn.style.fontWeight = '600';
+        const samsonChapters = [
+            { time: 0.0, num: 'Act 1 • 0:00', title: 'The Lion of Timnah', desc: 'Bare-hand battle' },
+            { time: 22.8, num: 'Act 2 • 0:22', title: 'Ramath-lehi Victory', desc: 'Donkey jawbone' },
+            { time: 45.0, num: 'Act 3 • 0:45', title: 'Delilah\'s Betrayal', desc: 'The sacred braids' },
+            { time: 68.6, num: 'Act 4 • 1:08', title: 'The Prison of Gaza', desc: 'Chains & millstone' },
+            { time: 88.4, num: 'Act 5 • 1:28', title: 'Temple of Dagon', desc: 'The final victory' }
+        ];
+
+        const davidChapters = [
+            { time: 0.0, num: 'Scene 1 • 0:00', title: 'The Shepherd Boy', desc: 'Bethlehem Hills' },
+            { time: 12.5, num: 'Scene 2 • 0:12', title: 'The Giant Goliath', desc: 'Valley of Elah' },
+            { time: 25.0, num: 'Scene 3 • 0:25', title: 'Five Smooth Stones', desc: 'Sparkling Brook' },
+            { time: 36.5, num: 'Scene 4 • 0:36', title: 'The Confrontation', desc: 'Faith & Sling' },
+            { time: 48.0, num: 'Scene 5 • 0:48', title: 'Joy and Victory', desc: 'Celebration' }
+        ];
+
+        function switchMovie(movie) {
+            currentMovie = movie;
+            const tabSamson = document.getElementById('tab-samson');
+            const tabDavid = document.getElementById('tab-david');
+
+            if (movie === 'samson') {
+                tabSamson.classList.add('active');
+                tabDavid.classList.remove('active');
+                samsonLangBar.style.display = 'flex';
+                movieTitle.innerText = 'Samson: The Chosen Nazarite';
+                movieSubtitle.innerText = 'Epic 3D Cinematic Animation Style • 6-Language Neural Voiceover • Layered Foley & Temple Collapse SFX';
+                setSamsonLang(currentSamsonLang);
+                renderChapters(samsonChapters);
+            } else {
+                tabDavid.classList.add('active');
+                tabSamson.classList.remove('active');
+                samsonLangBar.style.display = 'none';
+                movieTitle.innerText = 'David & Goliath: The Brave Shepherd';
+                movieSubtitle.innerText = 'Pixar 3D Cinematic Style • Children\'s Classic Story • English & Malayalam Narration';
+                videoSrc.src = 'src/main/resources/static/david_and_goliath_kids_story.mp4';
+                video.load();
+                video.play();
+                renderChapters(davidChapters);
+            }
+        }
+
+        function setSamsonLang(lang) {
+            currentSamsonLang = lang;
+            const langs = ['en', 'hi', 'ml', 'de', 'fr', 'es'];
+            langs.forEach(l => {
+                const btn = document.getElementById(`btn-lang-${l}`);
+                if (btn) btn.classList.toggle('active', l === lang);
             });
 
-            if (lang === 'ml') {
-                videoSrc.src = 'src/main/resources/static/david_and_goliath_malayalam_story.mp4';
-                btnMl.style.background = 'var(--gold)';
-                btnMl.style.color = '#000';
-                btnMl.style.fontWeight = '700';
-                subtitle.innerText = '3D ആനിമേഷൻ ശൈലി • മലയാളം ശബ്ദവിവരണം • മലയാളം സബ്‌ടൈറ്റിലുകൾ';
-            } else if (lang === 'de') {
-                videoSrc.src = 'src/main/resources/static/david_and_goliath_german_story.mp4';
-                btnDe.style.background = 'var(--gold)';
-                btnDe.style.color = '#000';
-                btnDe.style.fontWeight = '700';
-                subtitle.innerText = 'Pixar 3D Stil • Deutsche Sprachausgabe (Conrad) • Deutsche Untertitel';
-            } else {
-                videoSrc.src = 'src/main/resources/static/david_and_goliath_kids_story.mp4';
-                btnEn.style.background = 'var(--gold)';
-                btnEn.style.color = '#000';
-                btnEn.style.fontWeight = '700';
-                subtitle.innerText = 'Pixar 3D Cinematic Style • English Voiceover Narration • Synchronized Subtitles';
-            }
-
+            // Cache-buster ensures browser immediately plays the latest rendered audio/video
+            videoSrc.src = `storage/samson/output/samson_${lang}.mp4?v=${Date.now()}`;
             video.load();
-            video.currentTime = Math.min(currentTime, 50);
-            if (isPlaying) video.play();
+            video.play();
+        }
+
+        function renderChapters(chapters) {
+            chaptersContainer.innerHTML = '';
+            chapters.forEach(ch => {
+                const btn = document.createElement('button');
+                btn.className = 'chapter-btn';
+                btn.onclick = () => jumpTo(ch.time);
+                btn.innerHTML = `
+                    <div class="chapter-num">${ch.num}</div>
+                    <div class="chapter-title">${ch.title}</div>
+                    <div class="chapter-time">${ch.desc}</div>
+                `;
+                chaptersContainer.appendChild(btn);
+            });
         }
 
         function jumpTo(seconds) {
@@ -324,4 +566,5 @@
         }
     </script>
 </body>
+
 </html>

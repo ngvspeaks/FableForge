@@ -1,0 +1,3 @@
+file 'C:\Users\NIBIN G VARGHESE\.gemini\antigravity-ide\scratch\text-to-video-pipeline\storage\samson\shorts\en\short_1_final.mp4'
+file 'C:\Users\NIBIN G VARGHESE\.gemini\antigravity-ide\scratch\text-to-video-pipeline\storage\samson\shorts\en\short_2_final.mp4'
+file 'C:\Users\NIBIN G VARGHESE\.gemini\antigravity-ide\scratch\text-to-video-pipeline\storage\samson\shorts\en\short_3_final.mp4'

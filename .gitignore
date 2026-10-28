@@ -11,3 +11,20 @@ storage/temp/*
 *.iml
 .vscode/
 .DS_Store
+
+# Python & Cache
+__pycache__/
+*.pyc
+
+# Heavy Rendered Media (Git repository limit safety)
+*.mp4
+*.webp
+*.wav
+*.mp3
+*.aac
+!*.gitkeep
+storage/**/*.mp4
+storage/**/*.webp
+storage/**/*.wav
+storage/**/*.mp3
+storage/**/*.aac

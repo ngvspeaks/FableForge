@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FableForge AI Motion Studio — Local RTX 4050</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(22, 30, 49, 0.75);
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.35);
+      --blue: #3b82f6;
+      --emerald: #10b981;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --radius: 16px;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+    }
+    .header {
+      text-align: center;
+      max-width: 900px;
+      margin-bottom: 32px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+    .badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .studio-container {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 900px) {
+      .studio-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(16px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .panel:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .media-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .media-container img, .media-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .panel-footer {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.15);
+    }
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    .spec-label {
+      color: var(--text-muted);
+    }
+    .spec-val {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .controls-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .btn {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%);
+      color: #000;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+    .specs-grid {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 768px) {
+      .specs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .spec-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .spec-card-num {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .spec-card-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge">
+      <span class="dot"></span>
+      <span>100% LOCAL GPU RUNTIME • ZERO PAID SERVICES</span>
+    </div>
+    <h1>FableForge Motion Studio</h1>
+    <p class="subtitle">
+      True physical motion diffusion generated locally on your NVIDIA GeForce RTX 4050 GPU (6GB VRAM) with dynamic low-memory streaming.
+    </p>
+  </div>
+
+  <div class="specs-grid">
+    <div class="spec-card">
+      <div class="spec-card-num">RTX 4050</div>
+      <div class="spec-card-label">Hardware Engine</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-card-num">FP8 E4M3FN</div>
+      <div class="spec-card-label">Quantized Precision</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-card-num">25 Frames</div>
+      <div class="spec-card-label">Temporal Motion</div>
+    </div>
+    <div class="spec-card">
+      <div class="spec-card-num">30 FPS</div>
+      <div class="spec-card-label">MP4 Video Master</div>
+    </div>
+  </div>
+
+  <div class="studio-container">
+    <!-- Left: Static Keyframe -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>🎨</span> Static Keyframe Source
+        </div>
+        <div class="panel-tag">Original 3D Concept</div>
+      </div>
+      <div class="media-container">
+        <img id="staticImg" src="storage/samson/images/jesus_kids_racecars.jpg" alt="Jesus & Kids Racecars">
+      </div>
+      <div class="panel-footer">
+        <div class="spec-row">
+          <span class="spec-label">Style:</span>
+          <span class="spec-val">Pixar 3D Cinematic Animation</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Target Audience:</span>
+          <span class="spec-val">Children's High-Viral Biblical Animation</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Base Resolution:</span>
+          <span class="spec-val">1376 × 768 (16:9)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Animated GPU Motion -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span>🎬</span> Local GPU Motion Output
+        </div>
+        <div class="panel-tag" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">Active Motion</div>
+      </div>
+      <div class="media-container">
+        <video id="motionVideo" autoplay loop muted playsinline controls>
+          <source src="storage/samson/video_clips/jesus_racecars_motion.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="panel-footer">
+        <div class="spec-row">
+          <span class="spec-label">Motion Elements:</span>
+          <span class="spec-val">Spinning Wheels, Character Bobs, Forward Camera Drift</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Diffusion Steps:</span>
+          <span class="spec-val">20 Steps Euler/Karras (SVD)</span>
+        </div>
+        <div class="controls-row">
+          <button class="btn btn-secondary" onclick="setSpeed(0.5)">0.5x Slow</button>
+          <button class="btn btn-secondary" onclick="setSpeed(1.0)">1.0x Normal</button>
+          <button class="btn btn-secondary" onclick="setSpeed(1.5)">1.5x Fast</button>
+          <button class="btn btn-primary" onclick="togglePlay()">Play / Pause</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('motionVideo');
+    function setSpeed(rate) {
+      if (video) video.playbackRate = rate;
+    }
+    function togglePlay() {
+      if (!video) return;
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    }
+  </script>
+</body>
+</html>

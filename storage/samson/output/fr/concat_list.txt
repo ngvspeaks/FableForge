@@ -1,0 +1,5 @@
+file 'C:\Users\NIBIN G VARGHESE\.gemini\antigravity-ide\scratch\text-to-video-pipeline\storage\samson\output\fr\scene_1_final.mp4'
+file 'C:\Users\NIBIN G VARGHESE\.gemini\antigravity-ide\scratch\text-to-video-pipeline\storage\samson\output\fr\scene_2_final.mp4'
+file 'C:\Users\NIBIN G VARGHESE\.gemini\antigravity-ide\scratch\text-to-video-pipeline\storage\samson\output\fr\scene_3_final.mp4'
+file 'C:\Users\NIBIN G VARGHESE\.gemini\antigravity-ide\scratch\text-to-video-pipeline\storage\samson\output\fr\scene_4_final.mp4'
+file 'C:\Users\NIBIN G VARGHESE\.gemini\antigravity-ide\scratch\text-to-video-pipeline\storage\samson\output\fr\scene_5_final.mp4'
